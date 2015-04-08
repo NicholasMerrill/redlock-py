@@ -36,10 +36,12 @@ class Redlock(object):
         self.retry_delay = retry_delay or self.default_retry_delay
 
     def lock_instance(self, server, resource, val, ttl):
-        try:
-            return server.set(resource, val, nx=True, px=ttl)
-        except:
-            return False
+        """
+        The redis-py SET command returns True if lock is acquired and None if not.
+        :rtype: True | False
+        :returns: True if lock is acquired, False otherwise.
+        """
+        return server.set(resource, val, nx=True, px=ttl) or False
 
     def unlock_instance(self, server, resource, val):
         try:
